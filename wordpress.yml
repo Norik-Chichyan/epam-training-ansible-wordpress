@@ -1,0 +1,12 @@
+---
+- hosts: 'local'
+  tasks:
+    - name: Installing nginx mariadb-server mariadb-client php-fpm php-mysql
+      apt: pkg={{ item }}
+      with_items:
+       - nginx
+       - mariadb-server
+       - mariadb-client
+       - php-fpm
+       - php-mysql
+      become: true

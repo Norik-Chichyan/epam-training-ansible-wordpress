@@ -1,12 +1,96 @@
 ---
-- hosts: 'local'
+- name: 'wordpress installing with playbook'
+  hosts: webserver
+  become: yes
   tasks:
-    - name: Installing nginx mariadb-server mariadb-client php-fpm php-mysql
-      apt: pkg={{ item }}
-      with_items:
-       - nginx
-       - mariadb-server
-       - mariadb-client
-       - php-fpm
-       - php-mysql
-      become: true
+    - name: 'Installing nginx mariadb-server mariadb-client php-fpm php-mysql'
+      apt:
+        name:
+           - nginx
+           - mariadb-server
+           - mariadb-client
+           - php-fpm
+           - php-mysql
+           - python3-pip
+           - python3-pymysql  
+        state: present
+        
+    - name: Make sure pymysql is present
+      become: yes 
+      pip:
+        name: pymysql
+        state: present
+
+    - name: "start mariadb"
+      action: 'service name=mariadb state=started'
+
+    - name: set root mysql password
+      mysql_user:
+               name: root
+               password: Aa123456
+               priv: "*.*:ALL,GRANT"
+               login_unix_socket: /var/run/mysqld/mysqld.sock
+      become: yes
+
+    - name: 'create wordpress db'
+      mysql_db:
+             name: 'wordpress_db'
+             state: present
+             login_user: root
+             login_password: Aa123456
+             login_unix_socket: /var/run/mysqld/mysqld.sock
+      become: yes
+
+    - name: Create Wordpress mysql user
+      mysql_user:
+             name: 'wordpress_user'
+             password: 'my_password'
+             priv: '*.*:ALL'
+             login_user: root
+             login_password: Aa123456
+             login_unix_socket: /var/run/mysqld/mysqld.sock
+      become: yes
+
+    - name: 'wordpress site config'
+      copy:
+        src:  wordpress_site.conf
+        dest: /etc/nginx/sites-available/wordpress.conf
+      become: yes
+    
+    - name: remove nginx default site
+      become: yes
+      ansible.builtin.file:
+                         path: /etc/nginx/sites-enabled/default
+                         state: absent
+
+    - name: Create a symbolic link
+      become: yes
+      ansible.builtin.file:
+                         src: /etc/nginx/sites-available/wordpress.conf
+                         dest: /etc/nginx/sites-enabled/wordpress.conf
+                         state: link                     
+      
+    - name: reload_nginx
+      become: yes
+      service:
+            name: nginx
+            state: reloaded
+
+    - name: 'check wordpress exist or not'
+      stat: path=/var/www/wordpress
+      register: wordpress_path_check
+
+    - name: download and unarchive wordpress
+      unarchive: 
+              src: http://wordpress.org/latest.tar.gz
+              dest: /var/www/
+              remote_src: yes
+      when: not wordpress_path_check.stat.exists
+
+    - name: change wordpress folder ownership
+      file:
+              path: /var/www/wordpress
+              owner: www-data
+              group: www-data
+      become: yes
+

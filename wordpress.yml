@@ -3,7 +3,7 @@
   hosts: webserver
   become: yes
   tasks:
-    - name: 'Installing nginx mariadb-server mariadb-client php-fpm php-mysql'
+    - name: 'Installing mysql php nginx pip packeges'
       apt:
         name:
            - nginx
@@ -15,14 +15,11 @@
            - python3-pymysql  
         state: present
         
-    - name: Make sure pymysql is present
+    - name: install pymysql
       become: yes 
       pip:
         name: pymysql
         state: present
-
-    - name: "start mariadb"
-      action: 'service name=mariadb state=started'
 
     - name: set root mysql password
       mysql_user:

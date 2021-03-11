@@ -1,0 +1,49 @@
+---
+# tasks file for mysql
+    - name: 'Installing mysql  pip packeges'
+      apt:
+        name:
+           - mariadb-server
+           - mariadb-client
+           - php-mysql
+           - python3-pip
+           - python3-pymysql
+        state: present
+        update_cache: yes
+      become: yes
+    - name: install pymysql
+      become: yes
+      pip:
+        name: pymysql
+        state: present
+
+    - name: set root mysql password
+      mysql_user:
+               name: root
+               password: Aa123456
+               login_user: root
+               login_password: Aa123456
+               check_implicit_admin: yes
+               priv: "*.*:ALL,GRANT"
+               login_unix_socket: /var/run/mysqld/mysqld.sock
+      become: yes
+
+    - name: 'create wordpress db'
+      mysql_db:
+             name: 'wordpress_db'
+             state: present
+             login_user: root
+             login_password: Aa123456
+             login_unix_socket: /var/run/mysqld/mysqld.sock
+      become: yes
+
+    - name: Create Wordpress mysql user
+      mysql_user:
+             name: 'wordpress_user'
+             password: 'my_password'
+             priv: '*.*:ALL'
+             login_user: root
+             login_password: Aa123456
+             login_unix_socket: /var/run/mysqld/mysqld.sock
+      become: yes
+

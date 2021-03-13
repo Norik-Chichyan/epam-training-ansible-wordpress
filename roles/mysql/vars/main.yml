@@ -1,2 +1,3 @@
 ---
 # vars file for mysql
+  root_password: Aa123456

@@ -20,9 +20,9 @@
     - name: set root mysql password
       mysql_user:
                name: root
-               password: Aa123456
+               password: "{{ root_password }}"
                login_user: root
-               login_password: Aa123456
+               login_password: "{{ root_password }}"
                check_implicit_admin: yes
                priv: "*.*:ALL,GRANT"
                login_unix_socket: /var/run/mysqld/mysqld.sock
@@ -33,7 +33,7 @@
              name: 'wordpress_db'
              state: present
              login_user: root
-             login_password: Aa123456
+             login_password: "{{ root_password }}"
              login_unix_socket: /var/run/mysqld/mysqld.sock
       become: yes
 
@@ -43,7 +43,7 @@
              password: 'my_password'
              priv: '*.*:ALL'
              login_user: root
-             login_password: Aa123456
+             login_password: "{{ root_password }}"
              login_unix_socket: /var/run/mysqld/mysqld.sock
       become: yes
 

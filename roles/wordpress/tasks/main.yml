@@ -10,6 +10,13 @@
               dest: /var/www/
               remote_src: yes
       when: 'not wordpress_path_check.stat.exists'
+    
+    - name: 'Setup wp-config.php'
+      template:
+              src: 'wp-config-template'
+              dest: '{{ wordpress_files_path }}/wp-config.php'
+      become: yes
+      notify: Reload nginx
 
     - name: change wordpress folder ownership
       file:

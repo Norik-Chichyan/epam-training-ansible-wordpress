@@ -1,2 +1,4 @@
 ---
 # vars file for wordpress
+ wordpress_files_path: /var/www/wordpress
+ wordpress_downloading_site: 'http://wordpress.org/latest.tar.gz'

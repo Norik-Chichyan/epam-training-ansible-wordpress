@@ -1,19 +1,19 @@
 ---
 # tasks file for wordpress
     - name: 'check wordpress exist or not'
-      stat: path=/var/www/wordpress
+      stat: 'path="{{wordpress_files_path}}"'
       register: wordpress_path_check
 
     - name: download and unarchive wordpress
       unarchive:
-              src: http://wordpress.org/latest.tar.gz
+              src: '{{wordpress_downloading_site}}'
               dest: /var/www/
               remote_src: yes
-      when: not wordpress_path_check.stat.exists
+      when: 'not wordpress_path_check.stat.exists'
 
     - name: change wordpress folder ownership
       file:
-              path: /var/www/wordpress
+              path: '{{wordpress_files_path}}'
               owner: www-data
               group: www-data
       become: yes

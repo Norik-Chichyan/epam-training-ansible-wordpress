@@ -1,3 +1,3 @@
 [webserver]
-10.0.2.6
-
+#10.0.2.6
+3.21.169.27 ansible_user=ubuntu ansible_ssh_private_key_file=/home/norik/.ssh/aws-key.pem

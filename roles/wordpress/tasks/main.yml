@@ -5,6 +5,7 @@
       register: wordpress_path_check
 
     - name: download and unarchive wordpress
+      become: yes
       unarchive:
               src: '{{wordpress_downloading_site}}'
               dest: /var/www/
@@ -24,3 +25,5 @@
               owner: www-data
               group: www-data
       become: yes
+      notify: 
+        - Reload nginx

@@ -38,5 +38,5 @@
                          dest: /etc/nginx/sites-enabled/wordpress.conf
                          state: link
       notify:
-        - name: Reload nginx
+        - Reload nginx
 

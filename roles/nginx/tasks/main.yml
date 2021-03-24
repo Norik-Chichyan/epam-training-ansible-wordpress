@@ -4,6 +4,7 @@
     - name: 'Installing php nginx'
       apt:
         name:
+           - php-mysql     
            - nginx
            - php-fpm
            - python3-pip
@@ -11,6 +12,13 @@
         state: present
         update_cache: yes
       become: yes
+      
+    - name: install pymysql
+      become: yes
+      pip:
+        name: pymysql
+        state: present
+
     
     - name: 'wordpress site config'
       copy:

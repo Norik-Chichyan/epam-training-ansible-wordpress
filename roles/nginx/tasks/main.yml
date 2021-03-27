@@ -6,10 +6,16 @@
         name:
            - nginx
            - php-fpm
+           - php-mysql
            - python3-pip
            - python3-pymysql
         state: present
         update_cache: yes
+      become: yes
+    - name: install pymysql
+      pip:
+        name: pymysql
+        state: present
       become: yes
     
     - name: 'wordpress site config'
